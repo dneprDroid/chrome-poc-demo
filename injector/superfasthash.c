@@ -11,7 +11,8 @@
                        +(uint32_t)(((const uint8_t *)(d))[0]) )
 #endif
 
-DLL_PUBLIC
+ // https://github.com/chromium/chromium/blob/0b8aa3130ef9da743fa513b55b231965bd8a5573/base/third_party/superfasthash/superfasthash.c#L41
+EXPORTED
 uint32_t SuperFastHash (const void * _data, int len) {
     const char *data = (const char*)_data;
 uint32_t hash = len, tmp;
