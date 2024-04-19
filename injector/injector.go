@@ -26,7 +26,10 @@ func (self *ChromeInjector) generatePayload(urlStr string) (string, []byte) {
 	filename := self.getFilename(eHash, 0)
 
 	fileData := make([]byte, 0)
+	fileData = append(fileData, fileHeader(cacheKey)[4:]...)
+	fileData = append(fileData, []byte{ 0, 0, 0, 0 }...)
 	fileData = append(fileData, cacheKey...)
+	
 	return filename, fileData
 }
 
