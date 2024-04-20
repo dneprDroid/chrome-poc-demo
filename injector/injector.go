@@ -9,6 +9,7 @@ import (
 type ChromeInjector struct {
 	PageUrls []string
 	InjectedContent string
+	InjectedContentType string
 }
 
 func (self *ChromeInjector) Inject() {
@@ -28,6 +29,13 @@ func (self *ChromeInjector) generatePayload(urlStr string) (string, []byte) {
 
 	contentBytes := []byte(self.InjectedContent)
 
+	respInfoData := persistRespInfo(
+		pageUrl, 
+		cacheKey, 
+		self.InjectedContent, 
+		self.InjectedContentType,
+	)
+
 	fileData := make([]byte, 0)
 
 	fileData = append(fileData, fileHeader(cacheKey)[4:]...)
@@ -35,6 +43,7 @@ func (self *ChromeInjector) generatePayload(urlStr string) (string, []byte) {
 	fileData = append(fileData, cacheKey...)
 	fileData = append(fileData, contentBytes...)
 	fileData = append(fileData, fileEofData(contentBytes, 1)...)
+	fileData = append(fileData, respInfoData...)
 
 	return filename, fileData
 }
