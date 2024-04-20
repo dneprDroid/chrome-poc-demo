@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 	"strings"
+	"runtime"
 	"io/ioutil"
 	"os/exec"
 
@@ -33,16 +34,21 @@ func checkUserApproval() bool {
 	)
 
 	var input string
-    fmt.Scanln(&input)
+ 	fmt.Scanln(&input)
 
 	return strings.ToLower(input) == "yes"
 }
 
 func main() {
-	fmt.Print("Chrome POC demo\n")
+	fmt.Println("Chrome POC demo")
+
+	if runtime.GOOS == "windows" {
+		fmt.Println("Windows isn't supported")
+		return 
+	}
 
 	if !checkUserApproval() {
-		fmt.Print("Exiting...\n")
+		fmt.Println("Exiting...")
 		return
 	}
 
@@ -62,7 +68,7 @@ func main() {
 	killProc("Chrome")
 
 	for {
-		fmt.Print("\nInjecting cache data...\n")
+		fmt.Println("\nInjecting cache data...")
 
 		chromeInjector.Inject()
 
