@@ -3,6 +3,7 @@ package injector
 import (
 	"io"
 	"crypto/sha1"
+	"crypto/sha256"
 	"hash/crc32"
 	"encoding/binary"
 
@@ -23,4 +24,11 @@ func persistentHash(data []byte) uint32 {
 
 func crc32hash(data []byte) uint32 {
 	return crc32.ChecksumIEEE(data)
+}
+
+func metadataHash(key string) []byte {
+	h := sha256.New()
+	h.Write([]byte(key))
+	hash := h.Sum(nil)
+	return hash 
 }
