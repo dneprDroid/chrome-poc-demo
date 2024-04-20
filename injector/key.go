@@ -7,16 +7,13 @@ import (
 	"net/url"
 )
 
-func generateCacheKey(
-	pageUrl *url.URL,
-) string {
-	credKey := "1"
-	postKey := "0"
+func generateCacheKey(pageUrl *url.URL) string {
 	schemeWithDomain := pageUrl.Scheme + "://" + urlDomain(pageUrl)
+	
 	key := fmt.Sprintf(
-		"%s/%s/_dk_%s %s %s",
-		credKey, postKey, 
-		schemeWithDomain, schemeWithDomain,
+		"1/0/_dk_%s %s %s",
+		schemeWithDomain, 
+		schemeWithDomain,
 		pageUrl.String(),
 	)
 	return key 

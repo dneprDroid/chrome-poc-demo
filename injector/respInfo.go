@@ -88,20 +88,21 @@ func generateHeaderData(
 	pickle.WriteBytes(data)
 }
 
-func persistRespInfo(
+func (self *ChromeInjector) persistRespInfo(
 	pageUrl *url.URL,
-	cacheKey string, 
-	content string, 
-	contentType string,
+	cacheKey string,
 ) []byte {
 	currDate := time.Now()
-	// TODO: Read from the config
-	expiresDate := currDate.Add(time.Hour * 24 * (365))
+
+	expireDate := self.ExpireDate
+	if expireDate.IsZero() {
+		expireDate = currDate.Add(time.Hour * 24 * 365)
+	}
 
 	requestTime := currDate
 	responseTime := currDate.Add(time.Second)
 
-	contentData := []byte(content)
+	contentData := []byte(self.Content)
 
 	sslInfo := getCertInfoFromURL(pageUrl)
 	flags := getRespFlags(pageUrl, sslInfo)
@@ -115,14 +116,18 @@ func persistRespInfo(
 	generateHeaderData(
 		pickle,
 		len(contentData), 
-		contentType,
-		currDate, expiresDate,
+		self.ContentType,
+		currDate, 
+		expireDate,
 	)
+	
 	if sslInfo != nil {
 		persistCert(pickle, sslInfo)
 	}
+
 	host := pageUrl.Hostname()
 	pickle.WriteString(host)
+
 	port := pageUrl.Port()
 	portInt, _ := strconv.Atoi(port)
 
@@ -130,10 +135,10 @@ func persistRespInfo(
 	pickle.WriteUInt16(0x1, bigEndian)
 
 	if sslInfo != nil && sslInfo.keyExchangeGroup != 0 {
-		pickle.WriteInt32(int32( sslInfo.keyExchangeGroup ), bigEndian)
+		pickle.WriteInt32(int32(sslInfo.keyExchangeGroup), bigEndian)
 	}
 	if sslInfo != nil && sslInfo.peerSignatureAlgorithm != 0 {
-		pickle.WriteInt32(int32( sslInfo.peerSignatureAlgorithm ), bigEndian)
+		pickle.WriteInt32(int32(sslInfo.peerSignatureAlgorithm), bigEndian)
 	}
 	return pickle.Bytes()
 }

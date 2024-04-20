@@ -2,6 +2,7 @@ package injector
 
 import (
 	"fmt"
+	"time"
 	"net/url"
 	"io/ioutil"
 	"path/filepath"
@@ -10,9 +11,10 @@ import (
 )
 
 type ChromeInjector struct {
-	PageUrls []string
-	InjectedContent string
-	InjectedContentType string
+	Urls []string
+	Content string
+	ContentType string
+	ExpireDate time.Time
 }
 
 func (self *ChromeInjector) Inject() {
@@ -20,7 +22,7 @@ func (self *ChromeInjector) Inject() {
 
 	fmt.Printf("Found cache dirs: %v\n", cacheDirs)
 
-	for _, pageUrl := range self.PageUrls {
+	for _, pageUrl := range self.Urls {
 		filename, fileData := self.generatePayload(pageUrl)
 
 		for _, dirPath := range cacheDirs {
@@ -38,14 +40,9 @@ func (self *ChromeInjector) generatePayload(urlStr string) (string, []byte) {
 	eHash := entryHash(cacheKey)
 	filename := self.generateFilename(eHash, 0)
 
-	contentBytes := []byte(self.InjectedContent)
+	contentBytes := []byte(self.Content)
 
-	respInfoData := persistRespInfo(
-		pageUrl, 
-		cacheKey, 
-		self.InjectedContent, 
-		self.InjectedContentType,
-	)
+	respInfoData := self.persistRespInfo(pageUrl, cacheKey)
 
 	fileData := make([]byte, 0)
 

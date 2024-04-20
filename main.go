@@ -49,11 +49,12 @@ func main() {
 	testContent := readFile(TestHtmlFilePath)
 
 	chromeInjector := injector.ChromeInjector{}
-	chromeInjector.PageUrls = []string{
+	chromeInjector.ExpireDate = time.Now().Add(time.Hour * 24 * 365)
+	chromeInjector.Urls = []string{
 		"https://en.wikipedia.org/wiki/Main_Page",
 	}
-	chromeInjector.InjectedContent = testContent
-	chromeInjector.InjectedContentType = "text/html"
+	chromeInjector.Content = testContent
+	chromeInjector.ContentType = "text/html"
 
 	killProc("Chrome")
 
