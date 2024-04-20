@@ -25,7 +25,7 @@ func (self *ChromeInjector) Inject() {
 
 		for _, dirPath := range cacheDirs {
 			path := filepath.Join(dirPath, filename)
-			fmt.Printf("  Writing to '%v'\n", path)
+			fmt.Printf("  Writing to '%v' for '%v'\n", path, pageUrl)
 
 			ioutil.WriteFile(path, fileData, 0644)
 		}

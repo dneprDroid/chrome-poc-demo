@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>POC</title>
+
+    <script>
+        function main() {
+            document.getElementById("site-name").innerText = window.location.host || '?'
+        }
+        function runJs() {
+            const code = document.getElementById("jscode").value;
+            console.log("Running the code: ", code);
+            if (!code) return;
+            eval(code);
+        }
+    </script>
+</head>
+<body onload="main()">
+    <h1>This isn't <b id="site-name">_</b>, this's a test page</h1>
+
+    <textarea id="jscode" rows="4" cols="50">alert("test message");</textarea>
+    <br/>
+    <button onclick="runJs()">Run JS code</button>
+</body>
+</html>
