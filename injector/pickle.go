@@ -66,7 +66,8 @@ func (self *Pickle) WriteBytes(data []byte) bool {
 
 	dataLength := alignInt(length, SIZE_UINT32)
 	newSize := self.writeOffset + dataLength
-	if (newSize > self.capacityAfterHeader) {
+
+	if newSize > self.capacityAfterHeader {
 		self.resize(_max(self.capacityAfterHeader * 2, newSize))
 	}
 	startOffset := self.headerSize + self.writeOffset
@@ -74,7 +75,7 @@ func (self *Pickle) WriteBytes(data []byte) bool {
 	copy(self.header[startOffset:], data)
 
 	zerosEnd := endOffset + dataLength - length
-	for i := endOffset; i <= zerosEnd; i+=1 {
+	for i := endOffset; i <= zerosEnd; i += 1 {
 		self.header[i] = 0
 	}
 	self.setPayloadSize(newSize)
@@ -104,53 +105,30 @@ func (self *Pickle) WriteBytesString(valueBytes []byte) {
 }
 
 func (self *Pickle) WriteUInt16(number uint16, bigEndian bool) {
-	data := func() []byte {
-		b := make([]byte, 2)
-		if bigEndian { 
-			binary.BigEndian.PutUint16(b, number) 
-		} else {
-			binary.LittleEndian.PutUint16(b, number) 
-		}
-		return b 
-	}()
+	data := make([]byte, 2)
+	byteOrder(bigEndian).PutUint16(data, number)
+
 	self.WriteBytes(data)
 }
 
 func (self *Pickle) WriteUint32(number uint32, bigEndian bool) {
-	data := func() []byte {
-		b := make([]byte, 4)
-		if bigEndian { 
-			binary.BigEndian.PutUint32(b, number) 
-		} else {
-			binary.LittleEndian.PutUint32(b, number) 
-		}
-		return b 
-	}()
+	data := make([]byte, 4)
+	byteOrder(bigEndian).PutUint32(data, number) 
+
 	self.WriteBytes(data)
 }
 
 func (self *Pickle) WriteUint64(number uint64, bigEndian bool) {
-	data := func() []byte {
-		b := make([]byte, 8)
-		if bigEndian { 
-			binary.BigEndian.PutUint64(b, number) 
-		} else {
-			binary.LittleEndian.PutUint64(b, number) 
-		}
-		return b 
-	}()
+	data := make([]byte, 8)
+	byteOrder(bigEndian).PutUint64(data, number) 
+
 	self.WriteBytes(data)
 }
 
 func (self *Pickle) WriteSigned(value interface{}, bigEndian bool) error {
 	var b bytes.Buffer
-	var order binary.ByteOrder
-	if bigEndian {
-		order = binary.BigEndian
-	} else {
-		order = binary.LittleEndian
-	}
-	err := binary.Write(&b, order, value)
+	bOrder := byteOrder(bigEndian)
+	err := binary.Write(&b, bOrder, value)
 	if err != nil {
 		return err 
 	}
@@ -164,4 +142,11 @@ func (self *Pickle) WriteInt32(number int32, bigEndian bool) error {
 
 func (self *Pickle) WriteInt64(number int64, bigEndian bool) error {
 	return self.WriteSigned(&number, bigEndian)
+}
+
+func byteOrder(bigEndian bool) binary.ByteOrder {
+	if bigEndian {
+		return binary.BigEndian
+	} 
+	return binary.LittleEndian
 }

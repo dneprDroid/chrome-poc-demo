@@ -24,53 +24,29 @@ func (self *StructDump) WriteBytes(data []byte) {
 }
 
 func (self *StructDump) WriteUInt16(number uint16, bigEndian bool) {
-	data := func() []byte {
-		b := make([]byte, 2)
-		if bigEndian { 
-			binary.BigEndian.PutUint16(b, number) 
-		} else {
-			binary.LittleEndian.PutUint16(b, number) 
-		}
-		return b 
-	}()
+	data := make([]byte, 2)
+	byteOrder(bigEndian).PutUint16(data, number) 
+
 	self.WriteBytes(data)
 }
 
 func (self *StructDump) WriteUint32(number uint32, bigEndian bool) {
-	data := func() []byte {
-		b := make([]byte, 4)
-		if bigEndian { 
-			binary.BigEndian.PutUint32(b, number) 
-		} else {
-			binary.LittleEndian.PutUint32(b, number) 
-		}
-		return b 
-	}()
+	data := make([]byte, 4)
+	byteOrder(bigEndian).PutUint32(data, number) 
+
 	self.WriteBytes(data)
 }
 
 func (self *StructDump) WriteUint64(number uint64, bigEndian bool) {
-	data := func() []byte {
-		b := make([]byte, 8)
-		if bigEndian { 
-			binary.BigEndian.PutUint64(b, number) 
-		} else {
-			binary.LittleEndian.PutUint64(b, number) 
-		}
-		return b 
-	}()
+	data := make([]byte, 8)
+	byteOrder(bigEndian).PutUint64(data, number) 
+
 	self.WriteBytes(data)
 }
 
 func (self *StructDump) WriteSigned(value interface{}, bigEndian bool) error {
 	var b bytes.Buffer
-	var order binary.ByteOrder
-	if bigEndian {
-		order = binary.BigEndian
-	} else {
-		order = binary.LittleEndian
-	}
-	err := binary.Write(&b, order, value)
+	err := binary.Write(&b, byteOrder(bigEndian), value)
 	if err != nil {
 		return err 
 	}
