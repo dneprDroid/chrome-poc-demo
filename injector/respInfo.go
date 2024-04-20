@@ -63,7 +63,7 @@ func timeToInt64(t time.Time) int64 {
 	return micr + kTimeTToMicrosecondsOffset
 }
 
-func generateHeaderData(
+func (self *ChromeInjector) generateHeaderData(
 	pickle *Pickle,
 	contentSize int, 
 	contentType string,
@@ -76,6 +76,8 @@ func generateHeaderData(
 		currDate, 
 		expiresDate,
 	)
+	headers = append(headers, self.ExtraHttpHeaders...)
+
 	data := make([]byte, 0)
 	data = append(data, []byte("HTTP/1.1 200 OK")...)
 	data = append(data, 0x0)
@@ -102,8 +104,6 @@ func (self *ChromeInjector) persistRespInfo(
 	requestTime := currDate
 	responseTime := currDate.Add(time.Second)
 
-	contentData := []byte(self.Content)
-
 	sslInfo := getCertInfoFromURL(pageUrl)
 	flags := getRespFlags(pageUrl, sslInfo)
 	pickle := NewPickle()
@@ -113,9 +113,9 @@ func (self *ChromeInjector) persistRespInfo(
 	pickle.WriteInt64(timeToInt64(requestTime), bigEndian)
 	pickle.WriteInt64(timeToInt64(responseTime), bigEndian)
 
-	generateHeaderData(
+	self.generateHeaderData(
 		pickle,
-		len(contentData), 
+		len(self.Content), 
 		self.ContentType,
 		currDate, 
 		expireDate,

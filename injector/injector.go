@@ -12,9 +12,10 @@ import (
 
 type ChromeInjector struct {
 	Urls []string
-	Content string
+	Content []byte
 	ContentType string
 	ExpireDate time.Time
+	ExtraHttpHeaders []string
 }
 
 func (self *ChromeInjector) Inject() {
@@ -40,8 +41,6 @@ func (self *ChromeInjector) generatePayload(urlStr string) (string, []byte) {
 	eHash := entryHash(cacheKey)
 	filename := self.generateFilename(eHash, 0)
 
-	contentBytes := []byte(self.Content)
-
 	respInfoData := self.persistRespInfo(pageUrl, cacheKey)
 
 	fileData := make([]byte, 0)
@@ -49,8 +48,8 @@ func (self *ChromeInjector) generatePayload(urlStr string) (string, []byte) {
 	fileData = append(fileData, fileHeader(cacheKey)[4:]...)
 	fileData = append(fileData, []byte{ 0, 0, 0, 0 }...)
 	fileData = append(fileData, cacheKey...)
-	fileData = append(fileData, contentBytes...)
-	fileData = append(fileData, fileEofData(contentBytes, 1)...)
+	fileData = append(fileData, self.Content...)
+	fileData = append(fileData, fileEofData(self.Content, 1)...)
 
 	fileData = append(fileData, respInfoData...)
 	fileData = append(fileData, metadataHash(cacheKey)...)

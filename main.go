@@ -14,12 +14,12 @@ const (
 	TestHtmlFilePath = "./test-files/test.html"
 )
 
-func readFile(path string) string {
+func readFile(path string) []byte {
 	fileData, err := ioutil.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
-	return string(fileData)
+	return fileData
 }
 
 func killProc(name string) {
@@ -55,6 +55,9 @@ func main() {
 	}
 	chromeInjector.Content = testContent
 	chromeInjector.ContentType = "text/html"
+
+	/* use this to reduce the size of the generated cache file */
+	// chromeInjector.GzipContent()
 
 	killProc("Chrome")
 
