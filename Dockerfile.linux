@@ -1,0 +1,23 @@
+# docker build --platform=linux/amd64 -t chrome-poc:latest . -f Dockerfile.linux
+
+FROM golang:1.22 AS builder
+
+WORKDIR /build
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY main.go ./
+COPY cutil ./cutil
+COPY injector ./injector
+
+RUN CGO_ENABLED=1 \
+    go build -o chrome-poc
+
+FROM scratch
+
+WORKDIR /
+
+COPY --from=builder /build/chrome-poc ./
+COPY test-files ./test-files
