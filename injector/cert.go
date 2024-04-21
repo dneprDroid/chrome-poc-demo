@@ -17,7 +17,7 @@ const (
 	kCertConnected 
 )
 
-func getCertInfoFromHost(host string) *SSlInfo {
+func getCertInfoFromHost(host string) *SSLInfo {
 	conf := &tls.Config{
 		InsecureSkipVerify: true,
 	}
@@ -29,7 +29,7 @@ func getCertInfoFromHost(host string) *SSlInfo {
 	connState := conn.ConnectionState()
 	certs := connState.PeerCertificates
 
-	return &SSlInfo{
+	return &SSLInfo{
 		keyExchangeGroup: int(connState.CurveID),
 		peerSignatureAlgorithm: int(connState.PeerSignatureAlgorithm), 
 		certStatus: CERT_STATUS_OK,
@@ -38,7 +38,7 @@ func getCertInfoFromHost(host string) *SSlInfo {
 	}
 }
 
-func getCertInfoFromURL(pageUrl *url.URL) *SSlInfo {
+func getCertInfoFromURL(pageUrl *url.URL) *SSLInfo {
 	isHttps := pageUrl.Scheme == "https"
 	if !isHttps {
 		return nil
@@ -47,7 +47,7 @@ func getCertInfoFromURL(pageUrl *url.URL) *SSlInfo {
 	return getCertInfoFromHost(host)
 }
 
-type SSlInfo struct {
+type SSLInfo struct {
 	keyExchangeGroup int
 	peerSignatureAlgorithm int 
 
@@ -57,7 +57,7 @@ type SSlInfo struct {
 	certs []*x509.Certificate
 }
 
-func persistCert(pickle *Pickle, sslInfo *SSlInfo) {
+func persistCert(pickle *Pickle, sslInfo *SSLInfo) {
 	certs := sslInfo.certs 
 	if len(certs) == 0 {
 		return

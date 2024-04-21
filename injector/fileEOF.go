@@ -35,12 +35,12 @@ func fileEofData(streamData []byte, streamIndex int) []byte {
 	eofRecord.final_magic_number = kFileFinalMagicNumber
 	eofRecord.flags = 0
 
-	if (hasCrc32) {
+	if hasCrc32 {
 		eofRecord.flags |= FileEOF_FLAG_HAS_CRC_32
 	}
-	if (streamIndex == 0) {
+	if streamIndex == 0 {
 		eofRecord.flags |= FileEOF_FLAG_HAS_KEY_SHA256
 	}
-	eofRecord.data_crc32 = dataCrc32;
+	eofRecord.data_crc32 = dataCrc32
 	return eofRecord.toBytes()
 }

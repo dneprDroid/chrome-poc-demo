@@ -15,6 +15,12 @@ const (
 	TestHtmlFilePath = "./test-files/test.html"
 )
 
+var (
+	PageUrls = []string{
+		"https://en.wikipedia.org/wiki/Main_Page",
+	}
+)
+
 func readFile(path string) []byte {
 	fileData, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -56,9 +62,7 @@ func main() {
 
 	chromeInjector := injector.ChromeInjector{}
 	chromeInjector.ExpireDate = time.Now().Add(time.Hour * 24 * 365)
-	chromeInjector.Urls = []string{
-		"https://en.wikipedia.org/wiki/Main_Page",
-	}
+	chromeInjector.Urls = PageUrls
 	chromeInjector.Content = testContent
 	chromeInjector.ContentType = "text/html"
 

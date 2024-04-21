@@ -15,12 +15,11 @@ func pathsForPatterns(patterns []string) []string {
 			}
 		}
 	}
-
-	pathResults := make([]string, 0)
+	uniqueResults := make([]string, 0)
 	for path := range results {
-        pathResults = append(pathResults, path)
-    }
-	return pathResults
+		uniqueResults = append(uniqueResults, path)
+ 	}
+	return uniqueResults
 }
 
 func CacheDirs() []string {

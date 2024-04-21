@@ -10,12 +10,12 @@ type StructDump struct {
 	cursor int
 }
 
-func (self *StructDump) Bytes() []byte {
-	return self.data
-}
-
 func NewStructDump(data []byte) *StructDump {
 	return &StructDump{data: data}
+}
+
+func (self *StructDump) Bytes() []byte {
+	return self.data
 }
 
 func (self *StructDump) WriteBytes(data []byte) {

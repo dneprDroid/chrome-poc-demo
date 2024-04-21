@@ -14,13 +14,13 @@ func generateHttpHeaders(
 	contentSize int, 
 	contentType string,
 	currDate time.Time, 
-	expiresDate time.Time,
+	expireDate time.Time,
 ) []string {
 	currDateStr := formatHeaderDate(currDate)
 	headers := []string {
 		fmt.Sprintf("Content-Length: %v", contentSize),
 		fmt.Sprintf("Content-Type: %v; charset=utf-8", contentType),
-		"Expires: " + formatHeaderDate(expiresDate),
+		"Expires: " + formatHeaderDate(expireDate),
 		"Last-Modified: " + currDateStr,
 		"Date: " + currDateStr,
 	}

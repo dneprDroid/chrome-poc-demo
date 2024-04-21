@@ -100,7 +100,7 @@ func (self *Pickle) WriteString(value string) {
 }
 
 func (self *Pickle) WriteBytesString(valueBytes []byte) {
-	self.WriteInt32(int32(len(valueBytes)), false);
+	self.WriteInt32(int32(len(valueBytes)), false)
 	self.WriteBytes(valueBytes)
 }
 
