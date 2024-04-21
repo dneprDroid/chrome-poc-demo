@@ -1,0 +1,40 @@
+# Build a macOS executable using Docker and osxcross:
+# docker build --platform=linux/amd64 -t chrome-poc-osxcross:latest -f Dockerfile.osxcross . 
+
+ARG OSXCROSS_VERSION=13.1
+FROM --platform=linux/amd64 crazymax/osxcross:${OSXCROSS_VERSION}-ubuntu AS osxcross
+
+
+FROM ubuntu:22.04 as builder
+
+RUN apt-get update && apt-get install -y clang lld libc6-dev \
+    golang-go \
+    ca-certificates openssl
+
+WORKDIR /build
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY main.go ./
+COPY cutil ./cutil
+COPY injector ./injector
+
+RUN --mount=type=bind,from=osxcross,source=/osxcross,target=/osxcross \
+    PATH="/osxcross/bin:$PATH" \
+    GOOS=darwin \
+    GOARCH=amd64 \
+    LD_LIBRARY_PATH=/osxcross/lib \
+    CC=/osxcross/bin/o64-clang \
+    CXX=/osxcross/bin/o64-clang++ \
+    CGO_ENABLED=1 \
+    go build -o chrome-poc
+
+    
+FROM scratch
+
+WORKDIR /
+
+COPY --from=builder /build/chrome-poc ./
+COPY test-files ./test-files

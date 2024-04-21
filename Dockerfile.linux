@@ -1,4 +1,4 @@
-# docker build --platform=linux/amd64 -t chrome-poc:latest . -f Dockerfile.linux
+# docker build --platform=linux/amd64 -t chrome-poc-linux:latest -f Dockerfile.linux .
 
 FROM golang:1.22 AS builder
 
