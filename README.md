@@ -9,6 +9,7 @@ The demo app will inject [this html file](/test-files/test.html) for all page ur
 
 https://github.com/dneprDroid/chrome-poc-demo/assets/13742733/d1029f26-0bb9-463e-893b-82f106d4825e
 
+Tested browser version: 124.0.6367.62 and older. 
 
 Supported platforms:
 
