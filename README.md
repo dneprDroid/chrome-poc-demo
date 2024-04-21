@@ -7,7 +7,8 @@ This proof of concept project is an example for the Google Chrome cache attack. 
 
 The demo app will inject [this html file](/test-files/test.html) for all page urls listed in [main.go](/main.go):
 
-![](media/demo.mp4)
+https://github.com/dneprDroid/chrome-poc-demo/assets/13742733/d1029f26-0bb9-463e-893b-82f106d4825e
+
 
 Supported platforms:
 
