@@ -18,6 +18,10 @@ const (
 var (
 	PageUrls = []string{
 		"https://en.wikipedia.org/wiki/Main_Page",
+		"https://www.youtube.com/",
+		"https://www.facebook.com/",
+		"https://mail.google.com/",
+		"https://www.google.com/drive/",
 	}
 )
 
@@ -35,8 +39,12 @@ func killProc(name string) {
 
 func checkUserApproval() bool {
 	fmt.Printf(
-		"Do you want to inject code from %v into web pages in Chrome? yes/no\n", 
+		"Do you want to inject code from %v into these web pages in Chrome?" +
+		"\n\n%v\n" +
+		"NOTE: You can modify the list of test urls for injection in main.go\n\n" +
+		" yes/no\n", 
 		TestHtmlFilePath,
+		PageUrls,
 	)
 
 	var input string
