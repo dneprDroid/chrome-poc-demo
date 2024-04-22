@@ -39,18 +39,25 @@ func killProc(name string) {
 
 func checkUserApproval() bool {
 	fmt.Printf(
-		"Do you want to inject code from %v into these web pages in Chrome?" +
-		"\n\n%v\n" +
+		"It'll replace web pages for urls:\n%v\n" +
 		"NOTE: You can modify the list of test urls for injection in main.go\n\n" +
-		" yes/no\n", 
-		TestHtmlFilePath,
+		"Do you want to inject code from %v into these web pages in Chrome?\n" +
+		"yes/no\n", 
 		PageUrls,
+		TestHtmlFilePath,
 	)
 
-	var input string
- 	fmt.Scanln(&input)
+	for {
+		var input string
+		fmt.Scanln(&input)
 
-	return strings.ToLower(input) == "yes"
+		switch strings.ToLower(input) {
+		case "yes": return true 
+		case "no": return false 
+		default:
+			fmt.Println("Please enter 'yes' or 'no'")
+		}
+	}
 }
 
 func main() {
