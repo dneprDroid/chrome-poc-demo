@@ -84,6 +84,10 @@ func main() {
 	/* use this to reduce the size of the generated cache file */
 	// chromeInjector.GzipContent()
 
+	/* 
+	kill the Chrome process to make sure 
+	it isn't writing to those cache files right now
+	*/
 	killProc("Chrome")
 
 	for {
@@ -91,6 +95,7 @@ func main() {
 
 		chromeInjector.Inject()
 
+		/* if the user has cleaned up the cache files, we can re-inject them every 5 seconds */
 		time.Sleep(5 * time.Second)
 	}
 }
