@@ -17,3 +17,28 @@ Supported platforms:
 - Linux 
 
 **NOTE**: For Windows, Google Chrome uses a different cache format. It's possible to run this attack on this platform, but it requires to implement **the block file caching**. 
+
+### Build 
+
+Build the project:
+
+```bash 
+go mod download
+
+CGO_ENABLED=1 go build -o chrome-poc
+
+```
+
+Using Docker:
+
+```bash 
+# build a Linux executable
+docker build --platform=linux/amd64 -t chrome-poc-linux:latest -f Dockerfile.linux .
+
+```
+
+```bash 
+# build a macOS executable via osxcross
+docker build --platform=linux/amd64 -t chrome-poc-osxcross:latest -f Dockerfile.osxcross . 
+
+```
