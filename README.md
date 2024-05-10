@@ -38,7 +38,7 @@ docker build --platform=linux/amd64 -t chrome-poc-linux:latest -f Dockerfile.lin
 ```
 
 ```bash 
-# build a macOS executable via osxcross
+# cross-compile a macOS executable via osxcross
 docker build --platform=linux/amd64 -t chrome-poc-osxcross:latest -f Dockerfile.osxcross . 
 
 ```
